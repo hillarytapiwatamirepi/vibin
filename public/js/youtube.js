@@ -2,7 +2,8 @@
 /**
  * list of videoarrays, queued, sort of like the current playlist
  */
-var videoIDs = [] ;
+var videoIDs = ['GdVX_M1RbGw','JpGKWUdRnXE'] ;
+var currentIndex = 0;
 
 
 /**
@@ -31,11 +32,20 @@ function onYouTubeIframeAPIReady() {
         'onStateChange': onPlayerStateChange
     }
     });
+
+    // player.loadPlaylist(videoIDs,0,0)
+    // loadPlayList(player)
+
+
+
 }
 
 // 4. The API will call this function when the video player is ready.
 function onPlayerReady(event) {
-    event.target.playVideo();
+    // event.target.playVideo();
+    // currentIndex =  player.getPlaylistIndex();
+    // player.loadPlaylist(videoIDs,currentIndex,0)
+    // loadPlayList(player)
 }
 
 // 5. The API calls this function when the player's state changes.
@@ -47,12 +57,63 @@ function onPlayerStateChange(event) {
     setTimeout(stopVideo, 6000);
     done = true;
     }
+    if (event.data==0||event.data==-1){
+        let index =  player.getPlaylistIndex();
+        // player.loadPlaylist(videoIDs,index+1,0)
+        // console.log(currentIndex)
+        let playlist = player.getPlaylist();
+        if (playlist){
+            if (videoIDs.length!=playlist.length){
+                player.loadPlaylist(videoIDs, currentIndex+1);
+            }
+            currentIndex = index;   
+        }
+        else{
+
+            player.loadPlaylist(videoIDs, currentIndex+1);
+            currentIndex+=1;
+
+        }
+    }
+
+
 }
 function stopVideo() {
     player.stopVideo();
 }
 
 
+///start playing
+
+// cuePlayList()
+// loadPlayList(player)
+
+
+
+/**
+ * 
+ * cues playList, sends an event number when this is available for play
+ */
+
+ function cuePlayList(){
+
+    player.cuePlaylist(videoIDs,0,0);
+
+ }
+
+
+ /**
+  * @param player - youTube player object
+  * loads the current playlist and starts playing it
+  */
+
+  function loadPlayList(player){
+    //   console.log("started playing it")
+    //   console.log("player object",player)
+      player.loadPlaylist(videoIDs,currentIndex,0)
+      
+
+  }
 
 
 /**
@@ -186,12 +247,19 @@ function queVideoOnPlayList(){
     var isIDValid = idRegex.test(id);
     if (isIDValid){
         videoIDs.push(id);
+
+        // player.cueVideoById(id,0);//cues the video 
+        // player.loadVideoById(id,0)
+        // player.cuePlaylist(videoIDs,0,0)
+
+        console.log(player.getPlaylist())
         var videoTemplate = document.createElement("h1");
         videoTemplate.innerText = id;
         var videosDOM  = document.getElementById("videos");
         videosDOM.appendChild(videoTemplate);
         
     }
+    // console.log(videoIDs);
    }
 
 }
@@ -217,6 +285,9 @@ function removeFromPlaylist(index){
  * In a playlist, plays the next video
  */
 function playNextVideo(){
+
+    player.nextVideo();
+    console.log(videoIDs);
 
 
 }
